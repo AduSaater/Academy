@@ -6,6 +6,13 @@ class UIHomePage extends StatefulWidget {
 }
 
 class _UIHomePageState extends State<UIHomePage> {
+  List<ItemModel> items = [
+    ItemModel(name: "Airpods Max", image: "assets/images/headset.png", price: 200),
+    ItemModel(name: "HP ProBook 4544", image: "assets/images/laptop.png", price: 500),
+    ItemModel(name: "MacBook Pro 14", image: "assets/images/headset.png", price: 700),
+    ItemModel(name: "Apple iPad Pro", image: "assets/images/headset.png", price: 800),
+
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -160,19 +167,18 @@ class _UIHomePageState extends State<UIHomePage> {
            ),
          ),
           SizedBox(height: 10,),
-
           GridView.builder(
-          physics: NeverScrollableScrollPhysics(),
+            physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2, // Number of columns
               crossAxisSpacing: 10.0, // Spacing between columns
-              mainAxisSpacing: 10.0, // Spacing between rows
+              mainAxisSpacing: 20.0, // Spacing between rows
             ),
-            itemCount: 2, // Number of grid items
+            itemCount: items.length, // Number of grid items
             itemBuilder: (BuildContext context, int index) {
               return Container(
-                height: 310,
+                height: 257,
                 width: 166,
                 color: Color(0xffFFFFFF),
                 child: Column(
@@ -180,19 +186,19 @@ class _UIHomePageState extends State<UIHomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                    Padding(
-                     padding: EdgeInsets.only(top: 5.0, left: 5.0, right: 5.0),
+                     padding: EdgeInsets.only(top: 3.0, left: 3.0, right: 3.0),
                      child: Container(
                        height: 140.0,
                        color: Color(0xffF5FAFF),
                        child: Center(
-                         child: Image.asset("assets/images/headset.png"),
+                         child: Image.asset(items[index].image),
                        ),
                      ),
                    ),
                     SizedBox(height: 10,),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text("Airpods Max", style: TextStyle(
+                      child: Text(items[index].name, style: TextStyle(
                         color: Color(0xff343333),
                         fontSize: 12.0,
                         fontWeight: FontWeight.w700,
@@ -213,7 +219,7 @@ class _UIHomePageState extends State<UIHomePage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("N299.99", style: TextStyle(
+                          Text(items[index].price.toString() , style: TextStyle(
                               color: Color(0xff343333),
                               fontSize: 12.0,
                               fontWeight: FontWeight.w700,
@@ -241,3 +247,11 @@ class _UIHomePageState extends State<UIHomePage> {
     );
   }
 }
+
+class ItemModel {
+  final String name;
+  final String image;
+  final int price;
+  ItemModel({required this.name, required this.image, required this.price});
+}
+
