@@ -14,13 +14,9 @@ class _UIHomePageState extends State<UIHomePage> {
         title: Center(
           child: Container(
             width: MediaQuery.of(context).size.width,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
+            child:
                 Image.asset("assets/images/logo.png"),
 
-              ],
-            ),
           ),
 
         ),
@@ -39,8 +35,7 @@ class _UIHomePageState extends State<UIHomePage> {
               borderRadius: BorderRadius.circular(8),
               color: Color(0xff843667)
             ),
-            child: Center(
-              child: Padding(
+            child:  Padding(
                 padding:  EdgeInsets.all(8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -72,9 +67,10 @@ class _UIHomePageState extends State<UIHomePage> {
                   ],
                 ),
               ),
-            ),
+
           ),
           SizedBox(height: 10,),
+
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
@@ -153,11 +149,18 @@ class _UIHomePageState extends State<UIHomePage> {
             ),
           ),
           SizedBox(height: 20,),
-         ListTile(
-           title: Text("Hot Sales", style: TextStyle(color: Color(0xff343333), fontWeight: FontWeight.w700, fontSize: 12.0),),
-           trailing: Text("See all", style: TextStyle(color: Color(0xff2794F9), fontWeight: FontWeight.w500, fontSize: 10.0),),
+         Padding(
+           padding: EdgeInsets.only(left: 4.0, right: 4.0),
+           child: Row(
+             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+             children: [
+                Text("Hot Sales", style: TextStyle(color: Color(0xff343333), fontWeight: FontWeight.w700, fontSize: 12.0),),
+               Text("See all", style: TextStyle(color: Color(0xff2794F9), fontWeight: FontWeight.w500, fontSize: 10.0),),
+             ],
+           ),
          ),
           SizedBox(height: 10,),
+
           GridView.builder(
           physics: NeverScrollableScrollPhysics(),
             shrinkWrap: true,
@@ -231,7 +234,7 @@ class _UIHomePageState extends State<UIHomePage> {
                 ),
               );
             },
-          )
+          ),
 
         ],
       ),
