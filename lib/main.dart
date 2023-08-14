@@ -1,4 +1,3 @@
-import 'package:academy/home_page.dart';
 import 'package:academy/ui/home_page.dart';
 import 'package:flutter/material.dart';
 
