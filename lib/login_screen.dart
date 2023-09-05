@@ -1,5 +1,9 @@
+import 'dart:convert';
+import 'package:academy/ui/home_page.dart';
+import 'package:http/http.dart' as http;
 import 'package:academy/signup_page.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
   @override
@@ -8,6 +12,45 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool obscureText = true;
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  Future<void> loginUser() async {
+    final url = Uri.parse('https://saat-auth.onrender.com/api/login');
+    final response = await http.post(
+      url,
+      body: jsonEncode({
+        "email": emailController.text,
+        "password": passwordController.text,
+      }),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // User login successful
+      final responseData = jsonDecode(response.body);
+      final accessToken = responseData['token'];
+      final user = responseData['user'];
+      print("User logged in successfully!");
+      print("Access Token: $accessToken");
+      print("User Data: $user");
+
+      // Store the access token and user data in SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('accessToken', accessToken);
+      await prefs.setString('userData', jsonEncode(user));
+
+      // Navigate to another screen or perform other actions here
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (builder)=>UIHomePage()));
+    } else {
+      // User login failed
+      print("User login failed. Error: ${response.body}");
+      // Handle the login failure here, e.g., show an error message.
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,6 +64,7 @@ class _HomePageState extends State<HomePage> {
           Padding(
             padding: EdgeInsets.only(left: 16.0, right: 16.0),
             child: TextFormField(
+              controller: emailController,
               decoration: InputDecoration(
                 labelText: "Email",
                 prefixIcon: Icon(Icons.email),
@@ -33,6 +77,7 @@ class _HomePageState extends State<HomePage> {
           Padding(
             padding: EdgeInsets.only(left: 16.0, right: 16.0),
             child: TextFormField(
+              controller: passwordController,
               obscureText: obscureText,
               decoration: InputDecoration(
                 labelText: "Password",
@@ -63,14 +108,19 @@ class _HomePageState extends State<HomePage> {
           SizedBox(height: 20,),
           Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0),
-            child: Container(
-              height: 50,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Colors.orange,
+            child: GestureDetector(
+              onTap: () {
+                loginUser();
+              },
+              child: Container(
+                height: 50,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.orange,
+                ),
+                child: Center(child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 16),)),
               ),
-              child: Center(child: Text("Login", style: TextStyle(color: Colors.white, fontSize: 16),)),
             ),
           ),
           SizedBox(height: 40,),
