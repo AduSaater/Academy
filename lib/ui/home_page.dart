@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 class UIHomePage extends StatefulWidget {
   const UIHomePage({Key? key}) : super(key: key);
   @override
@@ -13,6 +17,40 @@ class _UIHomePageState extends State<UIHomePage> {
     ItemModel(name: "Apple iPad Pro", image: "assets/images/headset.png", price: 800),
 
   ];
+  Map<String, dynamic>? userData;
+
+  Future<void> getUserProfile() async {
+    final prefs = await SharedPreferences.getInstance();
+    final accessToken = prefs.getString('accessToken');
+
+    if (accessToken != null) {
+      final url = Uri.parse('https://saat-auth.onrender.com/api/users/me');
+      final response = await http.get(
+        url,
+        headers: {
+          "Authorization": "Bearer $accessToken",
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        final user = responseData['user'];
+        setState(() {
+          userData = user;
+        });
+      } else {
+        // Handle the error if the request fails
+        print("Failed to fetch user profile. Error: ${response.body}");
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUserProfile();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +69,21 @@ class _UIHomePageState extends State<UIHomePage> {
           Image.asset("assets/images/cart.png"),
         ],
       ),
-      drawer: Drawer(),
+      drawer: Drawer(
+       child: Center(
+          child: userData != null
+              ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('First Name: ${userData!['firstName']}'),
+              Text('Last Name: ${userData!['lastName']}'),
+              Text('Email: ${userData!['email']}'),
+              Text('Phone: ${userData!['phone']}'),
+            ],
+          )
+              : CircularProgressIndicator(),
+        ),
+      ),
       body: ListView(
         padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
         children: [
